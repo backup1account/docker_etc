@@ -1,0 +1,41 @@
+version: '3.9'
+
+# view elasticsearch logs
+
+services:
+  fluent_service:
+    build: .
+    container_name: fluent_container
+    working_dir: /fluentapp
+    volumes:
+      - ./in_docker.conf:/fluentapp/in_docker.conf
+    expose:
+      - 24224
+    ports:
+      - "24224:24224"
+    command: fluentd -c in_docker.conf
+
+  httpd:
+    image: httpd:latest
+    container_name: apache_httpd
+    ports:
+      - "8079:8079"
+    depends_on:
+      - fluent_service
+    logging:
+      driver: fluentd
+      options:
+        fluentd-address: localhost:24224
+        tag: httpd.access
+    command: sh -c "apachectl start && apachectl status && echo 'Httpd here!'"
+
+  elasticsearch:
+    image: elasticsearch:7.17.6
+    container_name: elasticsearch
+    restart: always
+    expose:
+      - 9200
+    ports:
+      - "9200:9200"
+    
+  

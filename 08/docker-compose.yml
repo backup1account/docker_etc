@@ -1,0 +1,15 @@
+# to do: in the docker-compose file add a delay before a service (node app) starts
+# 2nd version is just about adding separate service inside docker compose
+
+version: '3.9'
+services:
+  node_service:
+    image: node:latest
+    container_name: nodeservice
+    working_dir: /app
+    volumes:
+      - ./delay.sh:/app/delay.sh
+      - ./pizza.js:/app/pizza.js
+    ports:
+      - "3001:3000"
+    command: sh -c "chmod +x delay.sh && ./delay.sh && node pizza.js"

@@ -1,0 +1,4 @@
+Image size: 1B
+Tar file size: 9,52KB
+
+Dockerfile build definitions, docker image layers, a.txt etc.

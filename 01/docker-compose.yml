@@ -1,0 +1,28 @@
+version: '3.9'
+services:
+  db:
+    image: mongo:3.0
+    container_name: db
+  web:
+    image: node:6.9.1
+    container_name: web
+    depends_on:
+      - db
+    ports:
+      - 3000:3000
+    working_dir: /01
+    volumes:
+      - ./:/01/
+    environment:
+      MONGO_IP: db
+    command: node server.js
+  test:
+    image: node:6.9.1
+    container_name: test
+    depends_on:
+      - db
+      - web
+    volumes:
+      - ./:/01
+    command: curl http://web:3000
+
